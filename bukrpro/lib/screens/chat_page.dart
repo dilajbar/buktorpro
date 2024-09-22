@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'package:bukrpro/widgets/chat_text_field.dart';
 import 'package:bukrpro/widgets/popup.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 import '../models/conversationModel.dart';
 import '../providers/audioProvider.dart';
 import '../providers/chatProvider.dart';
@@ -52,81 +55,84 @@ class ChatPage extends StatelessWidget {
               },
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _msgcontroller,
-                  //focusNode: _focusNode,
-                  decoration: InputDecoration(
-                    hintText: 'Type a message',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-              ),
-              IconButton(
-                iconSize: 28,
-                icon: Icon(Icons.attach_file, color: Colors.black),
-                onPressed: () {
-                  _showIconPopup(context);
-                },
-              ),
-              IconButton(
-                iconSize: 28,
-                icon: Icon(Icons.camera_alt_outlined, color: Colors.black),
-                onPressed: () {
-                  Provider.of<ChatProvider>(context, listen: false)
-                      .sendImageFromCamera(true);
-                },
-              ),
-              IconButton(
-                iconSize: 28,
-                icon: Icon(Icons.send, color: Colors.black),
-                onPressed: () async {
-                  if (_msgcontroller.text.trim().isNotEmpty) {
-                    Provider.of<ChatProvider>(context, listen: false)
-                        .sendMessage(_msgcontroller.text, true);
-                    _msgcontroller.clear();
-                  }
-                },
-              ),
-            ],
-          ),
+          ChatTextField(msgcontroller: _msgcontroller),
         ],
       ),
     );
   }
 }
 
-Widget _buildMessageBubble(ChatMessage message, context) {
+Widget _buildMessageBubble(ChatMessage message, BuildContext context) {
   if (message.filePath != null) {
     return Align(
       alignment:
           message.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: _buildFileWidget(message, context),
       ),
     );
   }
+  final chatPro = context.watch<ChatProvider>();
 
   return Align(
     alignment:
         message.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-    child: Container(
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(
-        color: message.isSentByMe ? Colors.blue[200] : Colors.grey[300],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        message.message,
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
+    child: message.audiofile != null
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: VoiceMessageView(
+              activeSliderColor: Colors.green,
+              controller: VoiceController(
+                maxDuration: const Duration(minutes: 5),
+                isFile: true,
+                audioSrc: message.audiofile ?? "",
+                onComplete: () {
+                  /// do something on complete
+                },
+                onPause: () {
+                  /// do something on pause
+                },
+                onPlaying: () {
+                  /// do something on playing
+                },
+                onError: (err) {
+                  /// do somethin on error
+                },
+              ),
+              // maxDuration: const Duration(seconds: 10),
+              // isFile: false,
+              innerPadding: 12,
+              cornerRadius: 20,
+            ),
+          )
+        : Container(
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            decoration: BoxDecoration(
+              color: message.isSentByMe ? Colors.blue[200] : Colors.grey[300],
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: FittedBox(
+              child: Column(
+              mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    message.message ?? "",
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      DateFormat('hh:mm')
+                          .format(message.dateTime ?? DateTime.now()),
+                      style: const TextStyle(color: Colors.black, fontSize: 10),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
   );
 }
 
@@ -167,22 +173,13 @@ Widget _buildFileWidget(ChatMessage message, context) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.attach_file, color: Colors.black),
+          const Icon(Icons.attach_file, color: Colors.black),
           Text(
             message.fileName ?? 'Unknown file',
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
           ),
         ],
       ),
     );
   }
-}
-
-void _showIconPopup(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return IconPopup();
-    },
-  );
 }
