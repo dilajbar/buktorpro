@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:bukrpro/widgets/chat_text_field.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:file_picker/file_picker.dart';
@@ -165,7 +166,7 @@ Widget _buildFileWidget(ChatMessage message, context) {
   if (message.fileType == FileType.image && message.filePath != null) {
     return GestureDetector(
       onTap: () {
-        final imageProvider = Image.file(File(message.filePath!)).image;
+        final imageProvider = FileImage(File(message.filePath!));
         showImageViewer(context, imageProvider, onViewerDismissed: () {});
       },
       child: Stack(children: [
@@ -190,8 +191,8 @@ Widget _buildFileWidget(ChatMessage message, context) {
             children: [
               Image.file(
                 File(message.filePath!),
-                width: 300,
-                height: 300,
+                // width: 300,
+                // height: 300,
                 fit: BoxFit.cover,
               ),
               Text(

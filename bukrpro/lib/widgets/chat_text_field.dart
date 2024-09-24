@@ -1,6 +1,5 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:bukrpro/providers/chatProvider.dart';
-
 import 'package:bukrpro/widgets/popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,47 +52,46 @@ class ChatTextField extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 15),
           ),
         if (chatPro.filePath != null && !chatPro.isRecording)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              VoiceMessageView(
-                controller: VoiceController(
-                  maxDuration: const Duration(minutes: 5),
-                  isFile: true,
-                  audioSrc: chatPro.filePath!,
-                  onComplete: () {
-                    /// do something on complete
-                  },
-                  onPause: () {
-                    /// do something on
-                    ///
-                  },
-                  onPlaying: () {
-                    /// do something on playing
-                  },
-                  onError: (err) {
-                    /// do somethin on error
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                VoiceMessageView(
+                  controller: VoiceController(
+                    maxDuration: const Duration(minutes: 5),
+                    isFile: true,
+                    audioSrc: chatPro.filePath!,
+                    onComplete: () {
+                      /// do something on complete
+                    },
+                    onPause: () {
+                      /// do something on
+                    },
+                    onPlaying: () {
+                      // do something on playing
+                    },
+                    onError: (err) {
+                      /// do somethin on error
+                    },
+                  ),
+                  innerPadding: 12,
+                  cornerRadius: 20,
+                ),
+                IconButton(
+                  iconSize: 28,
+                  icon: const CircleAvatar(
+                      child:
+                          Center(child: Icon(Icons.send, color: Colors.black))),
+                  onPressed: () async {
+                    chatPro.sendMessage(null, true, DateTime.now(),
+                        filePath: chatPro.filePath);
+                    // Navigator.pop(context);
                   },
                 ),
-                // maxDuration: const Duration(seconds: 10),
-                // isFile: false,
-                innerPadding: 12,
-                cornerRadius: 20,
-              ),
-              IconButton(
-                iconSize: 28,
-                icon: const CircleAvatar(
-                    child:
-                        Center(child: Icon(Icons.send, color: Colors.black))),
-                onPressed: () async {
-                  chatPro.sendMessage(null, true, DateTime.now(),
-                      filePath: chatPro.filePath);
-                  // Navigator.pop(context);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
-        if (chatPro.filePath == null && !chatPro.isPlaying)
+        if (chatPro.filePath == null || chatPro.isRecording)
           Row(
             children: [
               IconButton(

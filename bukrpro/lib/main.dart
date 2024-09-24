@@ -17,11 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        //ChangeNotifierProvider(create: (_) => Msgprovider()),
-
-        ChangeNotifierProvider(create: (_) => ChatProvider())
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => ChatProvider())],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(

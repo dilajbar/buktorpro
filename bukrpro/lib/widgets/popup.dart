@@ -80,28 +80,6 @@ class _IconPopupState extends State<IconPopup> {
                         Navigator.pop(context);
                       },
                     ),
-                    GestureDetector(
-                        onLongPress: () {
-                          chatPro.startRecording();
-                        },
-                        onLongPressUp: () {
-                          chatPro.stopRecording();
-                        },
-                        child: Icon(
-                            chatPro.isRecording ? Icons.cancel : Icons.mic,
-                            size: 30))
-                    // IconButton(
-                    //   icon: Icon(chatPro.isRecording ? Icons.cancel : Icons.mic,
-                    //       size: 30),
-                    //   onPressed: () {
-                    //     if (chatPro.isRecording) {
-                    //       chatPro.stopRecording();
-                    //     } else {
-                    //       chatPro.startRecording();
-                    //     }
-                    //     // Navigator.pop(context);
-                    //   },
-                    // ),
                   ],
                 ),
               ),

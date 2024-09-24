@@ -1,18 +1,15 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_waveform/just_waveform.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:rxdart/rxdart.dart';
-
 import '../models/chatModel.dart';
 import '../models/conversationModel.dart';
 
@@ -70,7 +67,7 @@ class ChatProvider with ChangeNotifier {
             fileName: fileName,
             fileType: fileType,
             dateTime: dateTime));
-        _errorMessage = ''; // Clear any previous errors
+        _errorMessage = '';
       } else {
         _errorMessage = 'No image selected.';
       }
@@ -211,7 +208,7 @@ class ChatProvider with ChangeNotifier {
         );
         recorderController.record().then(
           (value) {
-            // audioList.add(_record);
+            audioList.add(_record);
           },
         ); // Start showing waveforms
         _isRecording = true;
@@ -231,7 +228,7 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<void> playAudio() async {
-    if (_filePath != null && File(_filePath!).existsSync()) {
+    if (_filePath != null) {
       _isPlaying = true;
       playerController.preparePlayer(
           path: _filePath!, shouldExtractWaveform: true);

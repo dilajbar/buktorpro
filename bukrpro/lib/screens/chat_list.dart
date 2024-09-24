@@ -12,7 +12,6 @@ class ChatList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ChatProvider chatmodel = context.watch<ChatProvider>();
     const border = OutlineInputBorder(
         borderSide: BorderSide(color: Color.fromRGBO(225, 225, 225, 1)),
         borderRadius: BorderRadius.all(Radius.circular(20)));
@@ -71,9 +70,9 @@ class ChatList extends StatelessWidget {
                           style: const TextStyle(fontSize: 15),
                         ),
                         onTap: () {
-                          chatmodel.setSelectedchat(msg);
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ChatPage()));
+                          //   context.read<ChatProvider>().setSelectedchat(msg);
+
+                          Navigator.pushNamed(context, '/chat');
                         },
                       ),
                     );
