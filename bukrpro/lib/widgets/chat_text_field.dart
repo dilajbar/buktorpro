@@ -93,38 +93,41 @@ class ChatTextField extends StatelessWidget {
               ),
             ],
           ),
-        if (chatPro.filePath == null)
-          IconButton(
-            iconSize: 28,
-            icon: const Icon(Icons.attach_file, color: Colors.black),
-            onPressed: () {
-              _showIconPopup(context);
-            },
-          ),
-        if (chatPro.filePath == null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: GestureDetector(
-                onLongPress: () {
-                  chatPro.startRecording();
+        if (chatPro.filePath == null && !chatPro.isPlaying)
+          Row(
+            children: [
+              IconButton(
+                iconSize: 28,
+                icon: const Icon(Icons.attach_file, color: Colors.black),
+                onPressed: () {
+                  _showIconPopup(context);
                 },
-                onLongPressUp: () {
-                  chatPro.stopRecording();
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: GestureDetector(
+                    onLongPress: () {
+                      chatPro.startRecording();
+                    },
+                    onLongPressUp: () {
+                      chatPro.stopRecording();
+                    },
+                    child: Icon(chatPro.isRecording ? Icons.cancel : Icons.mic,
+                        size: 30)),
+              ),
+              IconButton(
+                iconSize: 28,
+                icon: const Icon(Icons.send, color: Colors.black),
+                onPressed: () async {
+                  if (_msgcontroller.text.trim().isNotEmpty) {
+                    chatPro.sendMessage(
+                        _msgcontroller.text, true, DateTime.now());
+                    _msgcontroller.clear();
+                  }
                 },
-                child: Icon(chatPro.isRecording ? Icons.cancel : Icons.mic,
-                    size: 30)),
-          ),
-        if (chatPro.filePath == null)
-          IconButton(
-            iconSize: 28,
-            icon: const Icon(Icons.send, color: Colors.black),
-            onPressed: () async {
-              if (_msgcontroller.text.trim().isNotEmpty) {
-                chatPro.sendMessage(_msgcontroller.text, true, DateTime.now());
-                _msgcontroller.clear();
-              }
-            },
-          ),
+              ),
+            ],
+          )
       ],
     );
   }
