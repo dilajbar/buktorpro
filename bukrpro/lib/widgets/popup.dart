@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:bukrpro/providers/chatProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+
 import 'package:just_waveform/just_waveform.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_message_package/voice_message_package.dart';
@@ -50,17 +50,15 @@ class _IconPopupState extends State<IconPopup> {
                     IconButton(
                       icon: const Icon(Icons.file_open, size: 30),
                       onPressed: () {
-                        Provider.of<ChatProvider>(context, listen: false)
-                            .sendFile(true);
+                        chatPro.sendFile(true, DateTime.now());
                         Navigator.pop(context);
                       },
                     ),
                     IconButton(
                       icon: const Icon(Icons.camera_alt, size: 30),
                       onPressed: () {
-                        Provider.of<ChatProvider>(context, listen: false)
-                            .sendImageFromCamera(true);
-                         Navigator.pop(context);
+                        chatPro.sendImageFromCamera(true, DateTime.now());
+                        Navigator.pop(context);
                       },
                     ),
                     IconButton(
@@ -70,31 +68,40 @@ class _IconPopupState extends State<IconPopup> {
                     IconButton(
                       icon: const Icon(Icons.headphones, size: 30),
                       onPressed: () {
-                        Provider.of<ChatProvider>(context, listen: false)
-                            .sendAudio(true);
+                        chatPro.sendAudio(true, DateTime.now());
                         Navigator.pop(context);
                       },
                     ),
                     IconButton(
                       icon: const Icon(Icons.photo_album, size: 30),
                       onPressed: () {
-                        Provider.of<ChatProvider>(context, listen: false)
-                            .sendFromGallery(true);
+                        chatPro.sendFromGallery(true, DateTime.now());
+
                         Navigator.pop(context);
                       },
                     ),
-                    IconButton(
-                      icon: Icon(chatPro.isRecording ? Icons.cancel : Icons.mic,
-                          size: 30),
-                      onPressed: () {
-                        if (chatPro.isRecording) {
-                          chatPro.stopRecording();
-                        } else {
+                    GestureDetector(
+                        onLongPress: () {
                           chatPro.startRecording();
-                        }
-                        // Navigator.pop(context);
-                      },
-                    ),
+                        },
+                        onLongPressUp: () {
+                          chatPro.stopRecording();
+                        },
+                        child: Icon(
+                            chatPro.isRecording ? Icons.cancel : Icons.mic,
+                            size: 30))
+                    // IconButton(
+                    //   icon: Icon(chatPro.isRecording ? Icons.cancel : Icons.mic,
+                    //       size: 30),
+                    //   onPressed: () {
+                    //     if (chatPro.isRecording) {
+                    //       chatPro.stopRecording();
+                    //     } else {
+                    //       chatPro.startRecording();
+                    //     }
+                    //     // Navigator.pop(context);
+                    //   },
+                    // ),
                   ],
                 ),
               ),
@@ -147,9 +154,12 @@ class _IconPopupState extends State<IconPopup> {
                     ),
                     IconButton(
                       iconSize: 28,
-                      icon: const CircleAvatar(child: Center(child: Icon(Icons.send, color: Colors.black))),
+                      icon: const CircleAvatar(
+                          child: Center(
+                              child: Icon(Icons.send, color: Colors.black))),
                       onPressed: () async {
-                        chatPro.sendMessage(null, true,filePath: chatPro.filePath);
+                        chatPro.sendMessage(null, true, DateTime.now(),
+                            filePath: chatPro.filePath);
                         Navigator.pop(context);
                       },
                     ),

@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:bukrpro/widgets/chat_text_field.dart';
-import 'package:bukrpro/widgets/popup.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:voice_message_package/voice_message_package.dart';
 import '../models/conversationModel.dart';
-import '../providers/audioProvider.dart';
+
 import '../providers/chatProvider.dart';
 
 class ChatPage extends StatelessWidget {
@@ -17,7 +17,6 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final audioProvider = Provider.of<AudioProvider>(context);
     final TextEditingController _msgcontroller = TextEditingController();
 
     ChatProvider chatmodel = context.watch<ChatProvider>();
@@ -55,7 +54,10 @@ class ChatPage extends StatelessWidget {
               },
             ),
           ),
-          ChatTextField(msgcontroller: _msgcontroller),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+            child: ChatTextField(msgcontroller: _msgcontroller),
+          ),
         ],
       ),
     );
@@ -81,29 +83,49 @@ Widget _buildMessageBubble(ChatMessage message, BuildContext context) {
     child: message.audiofile != null
         ? Padding(
             padding: const EdgeInsets.all(8.0),
-            child: VoiceMessageView(
-              activeSliderColor: Colors.green,
-              controller: VoiceController(
-                maxDuration: const Duration(minutes: 5),
-                isFile: true,
-                audioSrc: message.audiofile ?? "",
-                onComplete: () {
-                  /// do something on complete
-                },
-                onPause: () {
-                  /// do something on pause
-                },
-                onPlaying: () {
-                  /// do something on playing
-                },
-                onError: (err) {
-                  /// do somethin on error
-                },
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Stack(alignment: Alignment.bottomRight, children: [
+                    VoiceMessageView(
+                      circlesColor: Colors.green,
+
+                      activeSliderColor: Colors.green,
+                      controller: VoiceController(
+                        maxDuration: const Duration(minutes: 5),
+                        isFile: true,
+                        audioSrc: message.audiofile ?? '',
+                        onComplete: () {
+                          /// do something on complete
+                        },
+                        onPause: () {
+                          /// do something on pause
+                        },
+                        onPlaying: () {
+                          /// do something on playing
+                        },
+                        onError: (err) {
+                          /// do somethin on error
+                        },
+                      ),
+                      // maxDuration: const Duration(seconds: 10),
+                      // isFile: false,
+                      innerPadding: 12,
+
+                      cornerRadius: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        DateFormat('hh:mm a').format(message.dateTime),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 10),
+                      ),
+                    ),
+                  ]),
+                ],
               ),
-              // maxDuration: const Duration(seconds: 10),
-              // isFile: false,
-              innerPadding: 12,
-              cornerRadius: 20,
             ),
           )
         : Container(
@@ -114,19 +136,22 @@ Widget _buildMessageBubble(ChatMessage message, BuildContext context) {
               borderRadius: BorderRadius.circular(20),
             ),
             child: FittedBox(
-              child: Column(
-              mainAxisSize: MainAxisSize.min,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     message.message ?? "",
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black, fontSize: 18),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: Text(
-                      DateFormat('hh:mm')
-                          .format(message.dateTime ?? DateTime.now()),
-                      style: const TextStyle(color: Colors.black, fontSize: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        DateFormat('hh:mm a').format(message.dateTime),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 10),
+                      ),
                     ),
                   ),
                 ],
@@ -138,34 +163,45 @@ Widget _buildMessageBubble(ChatMessage message, BuildContext context) {
 
 Widget _buildFileWidget(ChatMessage message, context) {
   if (message.fileType == FileType.image && message.filePath != null) {
-    //   final imageProvider = Image.file(File(message.filePath!)).image;
     return GestureDetector(
       onTap: () {
-        // showImageViewer(context, imageProvider, onViewerDismissed: () {});
+        final imageProvider = Image.file(File(message.filePath!)).image;
+        showImageViewer(context, imageProvider, onViewerDismissed: () {});
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Colors.black,
-            width: 4, // Add a border
-          ),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(4, 4),
+      child: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey,
+              width: 4, // Add a border
             ),
-          ],
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10,
+                offset: Offset(4, 4),
+              ),
+            ],
+          ),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              Image.file(
+                File(message.filePath!),
+                width: 300,
+                height: 300,
+                fit: BoxFit.cover,
+              ),
+              Text(
+                DateFormat('hh:mm a').format(message.dateTime),
+                style: const TextStyle(color: Colors.black, fontSize: 10),
+              ),
+            ],
+          ),
         ),
-        child: Image.file(
-          File(message.filePath!),
-          width: 300,
-          height: 300,
-          fit: BoxFit.cover,
-        ),
-      ),
+      ]),
     );
   } else {
     return Align(

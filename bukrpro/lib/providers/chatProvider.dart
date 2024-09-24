@@ -1,14 +1,13 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_waveform/just_waveform.dart';
-import 'package:path/path.dart' as p;
+
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -55,7 +54,7 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendImageFromCamera(bool isSentByMe) async {
+  Future<void> sendImageFromCamera(bool isSentByMe, DateTime dateTime) async {
     try {
       final XFile? capturedImage =
           await _picker.pickImage(source: ImageSource.camera);
@@ -65,12 +64,12 @@ class ChatProvider with ChangeNotifier {
         FileType fileType = _determineFileType('jpg');
 
         _messages.add(ChatMessage(
-          message: '',
-          isSentByMe: isSentByMe,
-          filePath: filePath,
-          fileName: fileName,
-          fileType: fileType,
-        ));
+            message: '',
+            isSentByMe: isSentByMe,
+            filePath: filePath,
+            fileName: fileName,
+            fileType: fileType,
+            dateTime: dateTime));
         _errorMessage = ''; // Clear any previous errors
       } else {
         _errorMessage = 'No image selected.';
@@ -81,7 +80,7 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendFromGallery(bool isSentByMe) async {
+  Future<void> sendFromGallery(bool isSentByMe, DateTime dateTime) async {
     try {
       final XFile? pickedImage =
           await _picker.pickImage(source: ImageSource.gallery);
@@ -91,12 +90,12 @@ class ChatProvider with ChangeNotifier {
         FileType fileType = _determineFileType('jpg');
 
         _messages.add(ChatMessage(
-          message: '',
-          isSentByMe: isSentByMe,
-          filePath: filePath,
-          fileName: fileName,
-          fileType: fileType,
-        ));
+            message: '',
+            isSentByMe: isSentByMe,
+            filePath: filePath,
+            fileName: fileName,
+            fileType: fileType,
+            dateTime: dateTime));
         _errorMessage = '';
       } else {
         _errorMessage = 'No image selected.';
@@ -107,7 +106,7 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendFile(bool isSentByMe) async {
+  Future<void> sendFile(bool isSentByMe, DateTime dateTime) async {
     try {
       FilePickerResult? result =
           await FilePicker.platform.pickFiles(type: FileType.any);
@@ -117,12 +116,12 @@ class ChatProvider with ChangeNotifier {
         FileType fileType = _determineFileType(result.files.single.extension);
 
         _messages.add(ChatMessage(
-          message: '',
-          isSentByMe: isSentByMe,
-          filePath: filePath,
-          fileName: fileName,
-          fileType: fileType,
-        ));
+            message: '',
+            isSentByMe: isSentByMe,
+            filePath: filePath,
+            fileName: fileName,
+            fileType: fileType,
+            dateTime: dateTime));
         _errorMessage = '';
       } else {
         _errorMessage = 'No file selected.';
@@ -133,7 +132,7 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendAudio(bool isSentByMe) async {
+  Future<void> sendAudio(bool isSentByMe, DateTime datetime) async {
     try {
       FilePickerResult? result =
           await FilePicker.platform.pickFiles(type: FileType.audio);
@@ -143,12 +142,12 @@ class ChatProvider with ChangeNotifier {
         FileType fileType = _determineFileType(result.files.single.extension);
 
         _messages.add(ChatMessage(
-          message: '',
-          isSentByMe: isSentByMe,
-          filePath: filePath,
-          fileName: fileName,
-          fileType: fileType,
-        ));
+            message: '',
+            isSentByMe: isSentByMe,
+            filePath: filePath,
+            fileName: fileName,
+            fileType: fileType,
+            dateTime: datetime));
         _errorMessage = '';
       } else {
         _errorMessage = 'No audio file selected.';
@@ -159,15 +158,16 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void sendMessage(String? message, bool isSentByMe, {String? filePath}) {
+  void sendMessage(String? message, bool isSentByMe, DateTime dateTime,
+      {String? filePath}) {
     _messages.add(ChatMessage(
-      audiofile: filePath,
-      message: message,
-      isSentByMe: isSentByMe,
-    ));
+        audiofile: filePath,
+        message: message,
+        isSentByMe: isSentByMe,
+        dateTime: dateTime));
 
     if (isSentByMe && filePath == null) {
-      _simulateResponse();
+      _simulateResponse(dateTime);
     }
 
     if (filePath != null) {
@@ -176,12 +176,10 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _simulateResponse() {
+  void _simulateResponse(DateTime dateTime) {
     Future.delayed(Duration(seconds: 2), () {
       _messages.add(ChatMessage(
-        message: "hi response",
-        isSentByMe: false,
-      ));
+          message: "hi response", isSentByMe: false, dateTime: dateTime));
       notifyListeners();
     });
   }
@@ -245,17 +243,6 @@ class ChatProvider with ChangeNotifier {
 
   // custom  play
 
-  Future<void> playAudioCM(String? filepath) async {
-    if (filepath != null && File(filepath).existsSync()) {
-      _isPlaying = true;
-      playerController.preparePlayer(
-          path: filepath, shouldExtractWaveform: true);
-      await _audioPlayer.setFilePath(filepath);
-      await _audioPlayer.play();
-      notifyListeners();
-    }
-  }
-
   //Stop Audio Playback
   Future<void> stopAudio() async {
     await _audioPlayer.stop();
@@ -282,21 +269,6 @@ class ChatProvider with ChangeNotifier {
 
   // just audio  waveform
   final progressStream = BehaviorSubject<WaveformProgress>();
-
-  // Future<void> _init() async {
-  //   final audioFile =
-  //       File(p.join((await getTemporaryDirectory()).path, 'waveform.mp3'));
-  //   try {
-  //     await audioFile.writeAsBytes(
-  //         (await rootBundle.load('audio/waveform.mp3')).buffer.asUint8List());
-  //     final waveFile =
-  //         File(p.join((await getTemporaryDirectory()).path, 'waveform.wave'));
-  //     JustWaveform.extract(audioInFile: audioFile, waveOutFile: waveFile)
-  //         .listen(progressStream.add, onError: progressStream.addError);
-  //   } catch (e) {
-  //     progressStream.addError(e);
-  //   }
-  // }
 }
 
 FileType _determineFileType(String? extension) {

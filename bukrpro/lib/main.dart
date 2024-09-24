@@ -1,9 +1,9 @@
+import 'package:bukrpro/screens/chat_page.dart';
 import 'package:bukrpro/screens/login.dart';
 import 'package:bukrpro/widgets/popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/audioProvider.dart';
 import 'providers/chatProvider.dart';
 import 'screens/chat_list.dart';
 
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         //ChangeNotifierProvider(create: (_) => Msgprovider()),
-        ChangeNotifierProvider(create: (_) => AudioProvider()),
+
         ChangeNotifierProvider(create: (_) => ChatProvider())
       ],
       child: MaterialApp(
@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
             '/login': (context) => LoginPage(),
             '/chatslist': (context) => ChatList(),
             '/popup': (context) => IconPopup(),
+            '/chat': (context) => ChatPage()
           }),
     );
   }

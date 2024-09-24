@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../screens/audio_page.dart';
-
 class CustDrawer extends StatelessWidget {
   const CustDrawer({super.key});
 
@@ -48,14 +46,9 @@ class CustDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AudioRecorderScreen()));
-                },
+                onPressed: () {},
                 child: Text(
-                  'record audio',
+                  'calls',
                   style: GoogleFonts.comfortaa(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

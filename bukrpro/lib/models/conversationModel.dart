@@ -7,7 +7,7 @@ class ChatMessage {
   final String? fileName;
   final FileType? fileType;
   final String? audiofile;
-  DateTime? dateTime = DateTime.now();
+  final DateTime dateTime;
 
   ChatMessage(
       {required this.message,
@@ -16,5 +16,5 @@ class ChatMessage {
       this.fileName,
       this.fileType,
       this.audiofile,
-      this.dateTime});
+      required this.dateTime});
 }
