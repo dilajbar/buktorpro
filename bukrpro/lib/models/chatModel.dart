@@ -12,7 +12,7 @@ class Chatmodel {
   });
 }
 
-List<Chatmodel> Messages = [
+List messages = [
   Chatmodel(
       id: 1,
       name: 'dilajbar',
