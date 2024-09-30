@@ -34,11 +34,15 @@ class ChatPage extends StatelessWidget {
         backgroundColor: const Color(0xff5473bb),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              chatController.makePhoneCall('+919633624558');
+            },
             icon: const Icon(Icons.video_call),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              chatController.makePhoneCall('+919633624558');
+            },
             icon: const Icon(Icons.call),
           ),
           IconButton(
@@ -113,30 +117,48 @@ Widget _buildMessageBubble(ChatMessage message, BuildContext context) {
       ),
     );
   }
-//audio we recorded
+
+  // For audio message
   return message.audiofile != null
       ? Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: VoiceMessageBubble(
             audioSrc: message.audiofile ?? '',
             dateTime: message.dateTime,
             isSentByMe: message.isSentByMe,
           ),
         )
-      : Container(
-          padding: const EdgeInsets.all(10),
-          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          decoration: BoxDecoration(
-            color: message.isSentByMe ? const Color(0xff5473bb) : Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: FittedBox(
+      : Align(
+          alignment:
+              message.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            decoration: BoxDecoration(
+              color:
+                  message.isSentByMe ? const Color(0xff5473bb) : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  message.message ?? "",
-                  style: const TextStyle(color: Colors.black, fontSize: 15),
+                Flexible(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width *
+                          0.7, // Set max width to 70% of the screen width
+                    ),
+                    child: Text(
+                      message.message ?? "",
+                      style: TextStyle(
+                        color: message.isSentByMe ? Colors.white : Colors.black,
+                        fontSize: 15,
+                      ),
+                      softWrap: true, // Allow text to wrap onto multiple lines
+                      overflow: TextOverflow
+                          .visible, // Ensure overflow is handled correctly
+                    ),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
@@ -144,7 +166,10 @@ Widget _buildMessageBubble(ChatMessage message, BuildContext context) {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       DateFormat('hh:mm a').format(message.dateTime),
-                      style: const TextStyle(color: Colors.black, fontSize: 10),
+                      style: TextStyle(
+                        color: message.isSentByMe ? Colors.white : Colors.black,
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 ),

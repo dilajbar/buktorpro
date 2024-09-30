@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'controllers/chatcontroller.dart';
-import 'screens/chat_list.dart';
-import 'screens/chat_page.dart';
 import 'screens/login.dart';
-import 'widgets/popup.dart';
 
 void main() {
   runApp(const MyApp());

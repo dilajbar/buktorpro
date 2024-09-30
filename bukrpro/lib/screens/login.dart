@@ -69,7 +69,7 @@ class LoginPage extends StatelessWidget {
                         // height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.to(ChatList());
+                            Get.to(const ChatList());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff5473bb),
@@ -103,14 +103,14 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-                offset: Offset(3, 3),
+                offset: const Offset(3, 3),
                 color: Colors.grey.withOpacity(0.5),
                 blurRadius: 10)
           ]),

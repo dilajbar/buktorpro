@@ -1,5 +1,4 @@
 import 'package:bukrpro/models/chatModel.dart';
-import 'package:bukrpro/controllers/chatcontroller.dart';
 import 'package:bukrpro/screens/chat_page.dart';
 
 import 'package:bukrpro/widgets/drawer.dart';
@@ -78,9 +77,9 @@ class ChatList extends StatelessWidget {
                       style: const TextStyle(fontSize: 15),
                     ),
                     onTap: () {
-                      Get.to(ChatPage(
-                        selectedUsers: msg,
-                      ));
+                      Get.to(() => ChatPage(
+                            selectedUsers: msg,
+                          ));
                     },
                   ),
                 );

@@ -23,6 +23,10 @@ class VoiceMessageBubble extends StatelessWidget {
         children: [
           Stack(alignment: Alignment.bottomRight, children: [
             VoiceMessageView(
+              playIcon: const Icon(
+                Icons.play_arrow,
+                size: 30,
+              ),
               backgroundColor: const Color(0xff5473bb),
               circlesColor: Colors.green,
               activeSliderColor: Colors.green,

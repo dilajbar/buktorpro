@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -6,6 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/chatModel.dart';
 import '../models/conversationModel.dart';
 import 'package:get/get.dart';
@@ -23,6 +25,12 @@ class ChatController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   var selectedChatModel = Rxn<Chatmodel>();
   var isPermissionDenied = false.obs;
+  var isTextFieldEmpty = true.obs;
+  var recordingDuration = 0.obs;
+  Timer? _timer;
+  // Initially true
+
+  // Update based on text field input changes
 
   // List of chat models
 
@@ -37,6 +45,10 @@ class ChatController extends GetxController {
 
   void clearError() {
     errorMessage.value = '';
+  }
+
+  void updateTextFieldStatus(String input) {
+    isTextFieldEmpty.value = input.trim().isEmpty;
   }
 
   // Send image from the camera
@@ -64,9 +76,6 @@ class ChatController extends GetxController {
         } else {
           errorMessage.value = 'No image selected.';
         }
-
-        // Handle image picking logic for mobile platforms
-        // Use a package like image_picker for camera access
       } catch (e) {
         errorMessage.value = 'Failed to capture image: $e';
       }
@@ -168,6 +177,7 @@ class ChatController extends GetxController {
     // Reset file path if a file is sent
     if (filePath != null) {
       this.filePath.value = '';
+      updateTextFieldStatus('');
     }
   }
 
@@ -227,7 +237,13 @@ class ChatController extends GetxController {
       try {
         await _audioRecorder.start(RecordConfig(),
             path: filePath); // Start recording
-        isRecording.value = true; // Update recording status
+        isRecording.value = true;
+        recordingDuration.value = 0; // Reset timer
+
+        // Start a timer to count seconds
+        _timer = Timer.periodic(Duration(seconds: 01), (timer) {
+          recordingDuration.value++; // Increment timer every second
+        }); // Update recording status
       } catch (e) {
         errorMessage.value = 'Failed to start recording: $e';
       }
@@ -261,6 +277,8 @@ class ChatController extends GetxController {
         // sendMessage(null, true, DateTime.now(), filePath: filePath.value);
       }
       isRecording.value = false;
+
+      _timer?.cancel();
     } catch (e) {
       errorMessage.value = 'Failed to stop recording: $e';
     }
@@ -281,6 +299,7 @@ class ChatController extends GetxController {
     try {
       await _audioPlayer.stop();
       isPlaying.value = false;
+      // _timer?.cancel();
     } catch (e) {
       errorMessage.value = 'Failed to stop audio: $e';
     }
@@ -306,6 +325,7 @@ class ChatController extends GetxController {
   void onClear() {
     filePath.value = '';
     errorMessage.value = '';
+    stopRecording();
   }
 
   @override
@@ -314,6 +334,19 @@ class ChatController extends GetxController {
     _audioRecorder.dispose();
 
     super.onClose();
+  }
+
+  Future<void> makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      // Handle error when the phone call cannot be made
+      errorMessage('Could not launch $launchUri');
+    }
   }
 }
 

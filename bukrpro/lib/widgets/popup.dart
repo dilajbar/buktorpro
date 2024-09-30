@@ -23,63 +23,92 @@ class _IconPopupState extends State<IconPopup> {
     return Wrap(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: <Widget>[
-              const Text(
-                'Select an action',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 20,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.file_open, size: 30),
-                      onPressed: () {
+          // height: 278,
+          // width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      iconCreation(Icons.insert_drive_file_outlined,
+                          Colors.indigo, 'Document', () {
                         chatController.sendFile(true, DateTime.now());
                         Navigator.pop(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.camera_alt, size: 30),
-                      onPressed: () {
+                      }),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      iconCreation(
+                          Icons.camera_alt_outlined, Colors.pink, 'Camera', () {
                         chatController.sendImageFromCamera(
                             true, DateTime.now());
                         Navigator.pop(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.contact_page, size: 30),
-                      onPressed: () {
-                        // Add any contact functionality here
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.headphones, size: 30),
-                      onPressed: () {
-                        chatController.sendAudio(true, DateTime.now());
-                        Navigator.pop(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.photo_album, size: 30),
-                      onPressed: () {
+                      }),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      iconCreation(
+                          Icons.insert_photo_outlined, Colors.purple, 'Gallery',
+                          () {
                         chatController.sendFromGallery(true, DateTime.now());
                         Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
+                      }),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      iconCreation(
+                          Icons.headset_outlined, Colors.orange, 'Audio', () {
+                        chatController.sendAudio(true, DateTime.now());
+                        Navigator.pop(context);
+                      }),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      iconCreation(Icons.person_outlined, Colors.blue,
+                          'Contacts', () {}),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ],
     );
   }
+}
+
+Widget iconCreation(IconData icon, Color color, String text, Function ontap) {
+  return Column(
+    children: [
+      InkWell(
+        onTap: () {
+          ontap();
+        },
+        child: CircleAvatar(
+          backgroundColor: color,
+          radius: 30,
+          child: Icon(
+            color: Colors.white,
+            icon,
+            size: 29,
+          ),
+        ),
+      ),
+      Text(
+        text,
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+      )
+    ],
+  );
 }
