@@ -30,7 +30,10 @@ class ChatPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(selectedUsers.name),
+        title: Text(
+          selectedUsers.name,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         backgroundColor: const Color(0xff5473bb),
         actions: [
           IconButton(

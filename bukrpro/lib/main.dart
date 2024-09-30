@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'controllers/chatcontroller.dart';
 import 'screens/login.dart';
 
@@ -24,6 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
         useMaterial3: true,
+        fontFamily: 'Roboto Condensed',
         textTheme: const TextTheme(
           titleMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           titleSmall: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),

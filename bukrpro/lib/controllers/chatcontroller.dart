@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:bukrpro/models/chatModel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../models/chatModel.dart';
 import '../models/conversationModel.dart';
 import 'package:get/get.dart';
 
@@ -21,9 +21,9 @@ class ChatController extends GetxController {
   var isRecording = false.obs; // To track recording status
   var isPlaying = false.obs; // To track playback status
   var errorMessage = ''.obs; // To handle errors
-  var chatModel = <Chatmodel>[].obs;
+  var chatModel = <ChatModel>[].obs;
   final ImagePicker _picker = ImagePicker();
-  var selectedChatModel = Rxn<Chatmodel>();
+  var selectedChatModel = Rxn<ChatModel>();
   var isPermissionDenied = false.obs;
   var isTextFieldEmpty = true.obs;
   var recordingDuration = 0.obs;
@@ -35,7 +35,7 @@ class ChatController extends GetxController {
   // List of chat models
 
   // Handle chat and messages
-  void setSelectedChat(Chatmodel chatModel) {
+  void setSelectedChat(ChatModel chatModel) {
     selectedChatModel.value = chatModel;
   }
 

@@ -1,11 +1,9 @@
 import 'package:bukrpro/models/chatModel.dart';
 import 'package:bukrpro/screens/chat_page.dart';
-
 import 'package:bukrpro/widgets/drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:get/get.dart'; // Import GetX
+import 'package:get/get.dart';
 
 class ChatList extends StatelessWidget {
   const ChatList({
@@ -20,7 +18,7 @@ class ChatList extends StatelessWidget {
     );
 
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('hh:mm').format(now);
+    String formattedDate = DateFormat('hh:mm a').format(now);
 
     // Use GetX to access the ChatController
 
@@ -29,8 +27,7 @@ class ChatList extends StatelessWidget {
         backgroundColor: const Color(0xff5473bb),
         title: Text(
           'Chats',
-          style: GoogleFonts.roboto(
-              fontSize: 30, fontWeight: FontWeight.normal, color: Colors.black),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       drawer: const CustDrawer(),
@@ -51,8 +48,6 @@ class ChatList extends StatelessWidget {
               ),
             ),
             Expanded(
-
-                // Use Obx to listen to changes in the messages list
                 child: ListView.builder(
               itemCount: messages.length,
               itemBuilder: (context, index) {
@@ -61,6 +56,7 @@ class ChatList extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 2),
                   child: ListTile(
                     leading: CircleAvatar(
+                      maxRadius: 30,
                       backgroundColor: Colors.grey,
                       child: Text(msg.id.toString()),
                     ),

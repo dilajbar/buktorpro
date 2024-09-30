@@ -4,35 +4,12 @@ import 'package:voice_message_package/voice_message_package.dart';
 import '../controllers/chatcontroller.dart';
 import 'popup.dart'; // Adjust based on your popup import path
 
-class ChatTextField extends StatefulWidget {
-  final TextEditingController msgcontroller;
+class ChatTextField extends StatelessWidget {
+  ChatTextField({super.key, required TextEditingController msgcontroller})
+      : _msgcontroller = msgcontroller;
 
-  ChatTextField({super.key, required this.msgcontroller});
-
-  @override
-  _ChatTextFieldState createState() => _ChatTextFieldState();
-}
-
-class _ChatTextFieldState extends State<ChatTextField>
-    with TickerProviderStateMixin {
+  final TextEditingController _msgcontroller;
   final FocusNode _focusNode = FocusNode();
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500), // Customize duration
-    );
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +49,7 @@ class _ChatTextFieldState extends State<ChatTextField>
                           onChanged: (text) {
                             chatController.updateTextFieldStatus(text);
                           },
-                          controller: widget.msgcontroller,
+                          controller: _msgcontroller,
                           decoration: const InputDecoration(
                             hintText: "Message...",
                             hintStyle: TextStyle(color: Color(0xff5473bb)),
@@ -97,13 +74,14 @@ class _ChatTextFieldState extends State<ChatTextField>
                             color: Color(0xff5473bb)),
                         onPressed: () {
                           _focusNode.requestFocus();
-                          _showIconPopup(context); // Show with animation
+                          _showIconPopup(context);
                           _focusNode.unfocus();
                         },
                       ),
                     ],
                   );
                 } else if (chatController.isRecording.isTrue) {
+                  // Show the recording timer here
                   return Row(
                     children: [
                       const SizedBox(width: 16),
@@ -111,6 +89,7 @@ class _ChatTextFieldState extends State<ChatTextField>
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 18.0),
                           child: Obx(() {
+                            // Convert the duration into minutes and seconds format
                             final minutes =
                                 (chatController.recordingDuration.value ~/ 60)
                                     .toString()
@@ -151,6 +130,7 @@ class _ChatTextFieldState extends State<ChatTextField>
                         },
                       ),
                       VoiceMessageView(
+                        //size: ,
                         activeSliderColor: Colors.green,
                         circlesColor: Colors.black,
                         controller: VoiceController(
@@ -190,11 +170,11 @@ class _ChatTextFieldState extends State<ChatTextField>
                 if (chatController.isTextFieldEmpty.value) {
                   chatController.onTapHandler();
                 } else {
-                  if (widget.msgcontroller.text.trim().isNotEmpty) {
+                  if (_msgcontroller.text.trim().isNotEmpty) {
                     chatController.sendMessage(
-                        widget.msgcontroller.text, true, DateTime.now());
+                        _msgcontroller.text, true, DateTime.now());
 
-                    widget.msgcontroller.clear();
+                    _msgcontroller.clear();
                     chatController.updateTextFieldStatus('');
                   }
                 }
@@ -233,22 +213,11 @@ class _ChatTextFieldState extends State<ChatTextField>
   }
 
   void _showIconPopup(BuildContext context) {
-    _animationController.forward();
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
-      isScrollControlled: true,
       builder: (BuildContext context) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.0, 1.0),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.decelerate,
-          )),
-          child: IconPopup(),
-        );
+        return IconPopup();
       },
     );
   }

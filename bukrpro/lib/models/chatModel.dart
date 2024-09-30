@@ -1,10 +1,10 @@
-class Chatmodel {
+class ChatModel {
   final int? id;
   final String? name;
   final String? lastmsg;
   final List<String?> msglist;
 
-  Chatmodel({
+  ChatModel({
     required this.id,
     required this.lastmsg,
     required this.name,
@@ -13,29 +13,29 @@ class Chatmodel {
 }
 
 List messages = [
-  Chatmodel(
+  ChatModel(
       id: 1,
-      name: 'dilajbar',
+      name: 'Dil Ajbar',
       lastmsg: 'hloo',
       msglist: ['hii', 'how are u', 'fine']),
-  Chatmodel(
+  ChatModel(
       id: 2,
-      name: 'sameer',
+      name: 'Sameer',
       lastmsg: 'come',
       msglist: ['hii', 'how are u', 'fine']),
-  Chatmodel(
+  ChatModel(
       id: 3,
       name: 'Abhijith',
       lastmsg: 'have anice ',
       msglist: ['hii', 'how are u', 'fine']),
-  Chatmodel(
+  ChatModel(
       id: 4,
-      name: 'sumesh',
+      name: 'Sumesh',
       lastmsg: 'kloo',
       msglist: ['hii', 'how are u', 'fine']),
-  Chatmodel(
+  ChatModel(
       id: 5,
-      name: 'ragav',
+      name: 'Ragav',
       lastmsg: 'have anice ',
       msglist: ['hii', 'how are u', 'fine']),
 ];

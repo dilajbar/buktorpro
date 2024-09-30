@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  TextEditingController nameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class LoginPage extends StatelessWidget {
                         // height: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.to(const ChatList());
+                            Get.to(() => const ChatList());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff5473bb),

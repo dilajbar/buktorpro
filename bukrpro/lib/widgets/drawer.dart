@@ -1,7 +1,7 @@
-import 'package:bukrpro/utilities/utils.dart';
+import 'package:bukrpro/screens/chat_list.dart';
+import 'package:bukrpro/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustDrawer extends StatelessWidget {
   const CustDrawer({super.key});
@@ -24,24 +24,18 @@ class CustDrawer extends StatelessWidget {
                           'https://media.istockphoto.com/id/1857528212/vector/beautiful-woman-doctor-in-a-lab-coat-with-a-stethoscope.jpg?s=2048x2048&w=is&k=20&c=vlm0peV18DM5Vt7qI-97x9GbkyhUORrp-LOTBcy0A3Q=')),
                   Text(
                     'book',
-                    style: GoogleFonts.roboto(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black38),
-                  ),
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )
                 ],
               )),
           ListTile(
             leading: TextButton(
                 onPressed: () {
-                  Get.to(() => TextFieldTest());
+                  Get.to(() => const ChatList());
                 },
                 child: Text(
                   'Chats',
-                  style: GoogleFonts.comfortaa(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black38),
+                  style: Theme.of(context).textTheme.titleMedium,
                 )),
           ),
           ListTile(
@@ -49,23 +43,18 @@ class CustDrawer extends StatelessWidget {
                 onPressed: () {},
                 child: Text(
                   'calls',
-                  style: GoogleFonts.comfortaa(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black38),
+                  style: Theme.of(context).textTheme.titleMedium,
                 )),
           ),
           ListTile(
             leading: TextButton(
                 onPressed: () async {
-                  Navigator.pushNamed(context, '/login');
+                  Get.to(() => LoginPage());
+                  Get.to(LoginPage());
                 },
                 child: Text(
-                  'log out',
-                  style: GoogleFonts.comfortaa(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black38),
+                  'logout',
+                  style: Theme.of(context).textTheme.titleMedium,
                 )),
           )
         ],
