@@ -1,7 +1,6 @@
 import 'dart:io';
-
-import 'package:bukrpro/widgets/VoiceMessageBubble.dart';
-import 'package:bukrpro/widgets/chat_text_field.dart';
+import 'package:buktorgrow/widgets/chat_text_field.dart';
+import 'package:buktorgrow/widgets/voicemessagebubble.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +99,7 @@ class ChatPage extends StatelessWidget {
             }),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+            padding: const EdgeInsets.fromLTRB(5, 0, 20, 40),
             child: ChatTextField(msgcontroller: _msgcontroller),
           ),
         ],

@@ -15,7 +15,7 @@ xmlns:tools="http://schemas.android.com/tools"
     
 
     <application
-        android:label="bukrpro"
+        android:label="buktorgrow"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:icon, android:label"

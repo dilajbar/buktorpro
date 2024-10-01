@@ -1,5 +1,5 @@
-import 'package:bukrpro/screens/chat_list.dart';
-import 'package:bukrpro/screens/login.dart';
+import 'package:buktorgrow/screens/chat_list.dart';
+import 'package:buktorgrow/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

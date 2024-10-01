@@ -1,9 +1,10 @@
-import 'package:bukrpro/models/chatModel.dart';
-import 'package:bukrpro/screens/chat_page.dart';
-import 'package:bukrpro/widgets/drawer.dart';
+import 'package:buktorgrow/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+
+import '../models/chatModel.dart';
+import 'chat_page.dart';
 
 class ChatList extends StatelessWidget {
   const ChatList({

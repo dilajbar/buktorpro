@@ -25,8 +25,10 @@ class _IconPopupState extends State<IconPopup> {
         Container(
           // height: 278,
           // width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
+          margin: const EdgeInsets.all(40),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 50),
           child: Card(
+            color: Colors.black12,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
@@ -76,6 +78,11 @@ class _IconPopupState extends State<IconPopup> {
                       ),
                       iconCreation(Icons.person_outlined, Colors.blue,
                           'Contacts', () {}),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      iconCreation(
+                          Icons.location_pin, Colors.blue, 'Contacts', () {}),
                     ],
                   ),
                 ],

@@ -163,7 +163,7 @@ class ChatTextField extends StatelessWidget {
               }),
             ),
           ),
-          const SizedBox(width: 15),
+          const SizedBox(width: 5),
           Obx(() {
             return GestureDetector(
               onTap: () {
