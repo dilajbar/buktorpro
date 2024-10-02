@@ -2,8 +2,8 @@ import 'package:buktorgrow/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
-
-import '../models/chatModel.dart';
+import '../controllers/chatList_controller.dart';
+import '../controllers/login_controller.dart';
 import 'chat_page.dart';
 
 class ChatList extends StatelessWidget {
@@ -18,10 +18,14 @@ class ChatList extends StatelessWidget {
       borderRadius: BorderRadius.all(Radius.circular(20)),
     );
 
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('hh:mm a').format(now);
+    // Initialize the ChatController
+    final ChatlistController chatListController = Get.put(ChatlistController());
+    final LoginController authController = Get.put(LoginController());
 
-    // Use GetX to access the ChatController
+    // Fetch the chat list when the page loads
+    int organizationId = 3; // Example organization ID
+    String userToken = authController.userToken.value;
+    chatListController.loadChatList(organizationId, userToken);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,59 +37,88 @@ class ChatList extends StatelessWidget {
       ),
       drawer: const CustDrawer(),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search Name or Number',
-                  hintStyle: TextStyle(fontSize: 15),
-                  prefixIcon: Icon(Icons.search),
-                  enabledBorder: border,
-                  focusedBorder: border,
-                ),
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search Name or Number',
+                hintStyle: TextStyle(fontSize: 15),
+                prefixIcon: Icon(Icons.search),
+                enabledBorder: border,
+                focusedBorder: border,
               ),
             ),
-            Expanded(
-                child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final msg = messages[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      maxRadius: 30,
-                      backgroundColor: Colors.grey,
-                      child: Text(msg.id.toString()),
+          ),
+          // Use Obx to update the UI based on the ChatController state
+          Expanded(
+            child: Obx(() {
+              // Show loading indicator while the data is being fetched
+              if (chatListController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              // Show error message if there's an error
+              if (chatListController.errorMessage.isNotEmpty) {
+                return Center(
+                    child: Text(chatListController.errorMessage.value));
+              }
+
+              // Display the chat list if data is available
+
+              if (chatListController.chatList.value.data == null ||
+                  chatListController.chatList.value.data!.data!.isEmpty) {
+                return const Center(child: Text("No chats available."));
+              }
+
+              // If data is available, display the chat list
+              return ListView.builder(
+                itemCount: chatListController.chatList.value.data!.data!.length,
+                itemBuilder: (context, index) {
+                  final chat =
+                      chatListController.chatList.value.data!.data![index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        maxRadius: 30,
+                        backgroundColor: Colors.grey,
+                        child: Text(
+                            chat.id.toString()), // Display chat ID or avatar
+                      ),
+                      title: Text(
+                        chat.fullName ?? 'Unknown', // Display chat full name
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      subtitle: Text(
+                        chat.phone ?? 'No phone number', // Display phone number
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      // Assume latestChatCreatedAt is a valid DateTime string
+                      trailing: Text(
+                        DateFormat('hh:mm a').format(chat
+                            .latestChatCreatedAt!), // Display latest chat time
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                      onTap: () {
+                        // Navigate to the ChatPage when tapped
+                        Get.to(() => ChatPage(selectedUsers: chat));
+                      },
                     ),
-                    title: Text(
-                      msg.name.toString(),
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    subtitle: Text(
-                      msg.lastmsg.toString(),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    trailing: Text(
-                      formattedDate,
-                      style: const TextStyle(fontSize: 15),
-                    ),
-                    onTap: () {
-                      Get.to(() => ChatPage(
-                            selectedUsers: msg,
-                          ));
-                    },
-                  ),
-                );
-              },
-            ))
-          ]),
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xff5473bb),
-        onPressed: () {},
+        onPressed: () {
+          // Handle FAB pressed action
+        },
         child: const Icon(Icons.add),
       ),
     );
